@@ -50,6 +50,8 @@ yosys -p "read_verilog rtl/keccak_round.v rtl/sha3_256.v; synth -top sha3_256 -f
 These are generic gate counts before technology mapping. They show design size only, not chip area, timing or power.
 
 ## How it works
+![Block diagram](docs/block_diagram.png)
+
 * State = 1600 bits = 25 lanes x 64 bits. Rate = 1088 bits (136 bytes), capacity = 512 bits.
 * Absorb: XOR a 136-byte block into the first 1088 bits of the state, then run 24 rounds.
 * Round = theta (mix columns), rho (rotate lanes), pi (move lanes), chi (the only non-linear step), iota (add a round constant).
