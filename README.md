@@ -12,7 +12,7 @@ Everything is checked against Python's `hashlib`.
 | `rtl/sha3_256.v` | Top core: 3-state FSM (IDLE, RUN, DONE), padding, valid/ready handshakes |
 | `tb/tb_sha3_256.v` | Self-checking testbench |
 | `model/keccak_ref.py` | Readable Python reference model |
-| `model/gen_vectors.py` | Makes 625 test vectors with `hashlib` as the golden model |
+| `model/gen_vectors.py` | Makes 627 test vectors with `hashlib` as the golden model |
 | `model/check_model.py`, `model/rtl_mirror.py` | Extra Python checks (no simulator needed) |
 
 ## How to run (WSL2 / Ubuntu)
@@ -22,12 +22,12 @@ make sim      # generates vectors, compiles with Icarus, runs the testbench
 make wave     # open the waveform in GTKWave
 make model    # Python-only checks
 ```
-Expected: `ALL TESTS PASSED` and `Vectors passed: 625 / 625`.
+Expected: `ALL TESTS PASSED` and `Vectors passed: 627 / 627`.
 
 ## Results (measured with Icarus Verilog 12)
 ```
 Latency, single-block message: 25 clock cycles (block accepted -> digest valid)
-Vectors passed: 625 / 625,  other errors: 0
+Vectors passed: 627 / 627,  other errors: 0
 ALL TESTS PASSED
 ```
 Waveform (GTKWave): `st` = 00 idle, 01 running, 10 digest ready; `round` counts 0 to 23 (hex 17), one round per clock.
@@ -65,8 +65,10 @@ These are generic gate counts before technology mapping. They show design size o
 `in_last`, and `out_valid/out_ready`, `out_data[255:0]` (byte j at `[8*j +: 8]`).
 
 ## Verification
-* 625 vectors: empty, "abc", lengths around the 136-byte block edge (134, 135, 136, 137, 271-273, 407-409),
-  all-zero and all-one blocks, a 1000-byte message, and 600 random messages (0-420 bytes).
+* 627 vectors: the standard published test messages (empty, "abc", 448-bit and 896-bit), whose
+  digests are also checked against the published values; lengths around the 136-byte block edge
+  (134, 135, 136, 137, 271-273, 407-409), all-zero and all-one blocks, a 1000-byte message,
+  and 600 random messages (0-420 bytes).
 * Random idle gaps on the input and random back-pressure on the output.
 * Random garbage in the unused bytes of the last block (the core must ignore it).
 * Monitor checks that the digest stays stable while `out_ready` is low.
