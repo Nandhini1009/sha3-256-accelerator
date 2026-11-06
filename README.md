@@ -1,8 +1,9 @@
 # SHA3-256 Hash Accelerator (Verilog RTL)
 
-A SHA3-256 hash core in synthesizable Verilog. It takes a message in 136-byte blocks,
-does the padding itself, runs the Keccak-f[1600] permutation at one round per clock,
-and returns a 256-bit digest. Everything is checked against Python's `hashlib`.
+A SHA3-256 hash core in Verilog RTL, verified in simulation and synthesized with Yosys.
+It takes a message in 136-byte blocks, does the padding itself, runs the Keccak-f[1600]
+permutation at one round per clock, and returns a 256-bit digest.
+Everything is checked against Python's `hashlib`.
 
 ## Files
 | File | What it is |
@@ -16,7 +17,7 @@ and returns a 256-bit digest. Everything is checked against Python's `hashlib`.
 
 ## How to run (WSL2 / Ubuntu)
 ```
-sudo apt install iverilog gtkwave
+sudo apt install iverilog gtkwave make
 make sim      # generates vectors, compiles with Icarus, runs the testbench
 make wave     # open the waveform in GTKWave
 make model    # Python-only checks
@@ -33,7 +34,22 @@ Waveform (GTKWave): `st` = 00 idle, 01 running, 10 digest ready; `round` counts 
 
 ![Waveform](docs/waveform.png)
 
-## Design in one minute
+## Synthesis (Yosys 0.33, generic gate library)
+```
+yosys -p "read_verilog rtl/keccak_round.v rtl/sha3_256.v; synth -top sha3_256 -flatten; stat"
+```
+
+| Metric | Result |
+|---|---|
+| Yosys design check | 0 problems |
+| Total cells | 15,387 |
+| Flip-flops | 1,609 (1,600 state bits + 9 control bits) |
+| XOR / XNOR | 5,901 |
+| ANDNOT / MUX / OR | 4,212 / 2,482 / 685 |
+
+These are generic gate counts before technology mapping. They show design size only, not chip area, timing or power.
+
+## How it works
 * State = 1600 bits = 25 lanes x 64 bits. Rate = 1088 bits (136 bytes), capacity = 512 bits.
 * Absorb: XOR a 136-byte block into the first 1088 bits of the state, then run 24 rounds.
 * Round = theta (mix columns), rho (rotate lanes), pi (move lanes), chi (the only non-linear step), iota (add a round constant).
