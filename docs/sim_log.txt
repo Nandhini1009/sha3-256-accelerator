@@ -1,7 +1,7 @@
 VCD info: dumpfile sim/sha3_256.vcd opened for output.
 Latency, single-block message: 25 clock cycles (block accepted -> digest valid)
 --------------------------------------------------
-Vectors passed: 625 / 625,  other errors: 0
+Vectors passed: 627 / 627,  other errors: 0
 ALL TESTS PASSED
 --------------------------------------------------
-tb/tb_sha3_256.v:161: $finish called at 342996000 (1ps)
+tb/tb_sha3_256.v:161: $finish called at 344036000 (1ps)

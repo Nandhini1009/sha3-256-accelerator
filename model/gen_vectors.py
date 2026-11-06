@@ -6,7 +6,21 @@ random.seed(2026)
 out = os.path.join(os.path.dirname(__file__), "..", "sim")
 os.makedirs(out, exist_ok=True)
 
-vectors = [b"", b"abc"]                                     # NIST-style known messages
+# Standard published test messages with their published SHA3-256 digests
+# (values as listed on https://di-mgt.com.au/sha_testvectors.html). The assert below
+# makes sure hashlib agrees with them, so the expected values are not just "whatever hashlib says".
+PUBLISHED = [
+    (b"", "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a"),
+    (b"abc", "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"),
+    (b"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
+     "41c0dba2a9d6240849100376a8235e2c82e1b9998a999e21db32dd97496d3376"),
+    (b"abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu",
+     "916f6061fe879741ca6469b43971dfdb28b1a32dc36cb3254e812be27aad1d18"),
+]
+for m, d in PUBLISHED:
+    assert hashlib.sha3_256(m).hexdigest() == d, "published digest mismatch"
+
+vectors = [m for m, _ in PUBLISHED]                         # empty, "abc", 448-bit, 896-bit
 for L in [1, 2, 3, 55, 56, 64, 100, 134, 135, 136, 137,     # around the 136-byte block edge
           200, 271, 272, 273, 300, 407, 408, 409, 1000]:
     vectors.append(bytes(random.getrandbits(8) for _ in range(L)))
