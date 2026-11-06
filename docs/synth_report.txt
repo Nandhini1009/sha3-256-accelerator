@@ -1,0 +1,25 @@
+
+4. Printing statistics.
+
+=== sha3_256 ===
+
+   Number of wires:              12278
+   Number of wire bits:          27812
+   Number of public wires:         105
+   Number of public wire bits:   14035
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:              15387
+     $_ANDNOT_                    4212
+     $_AND_                         63
+     $_DFFE_PN0P_                 1609
+     $_MUX_                       2482
+     $_NAND_                        29
+     $_NOR_                         56
+     $_NOT_                        270
+     $_ORNOT_                       80
+     $_OR_                         685
+     $_XNOR_                       819
+     $_XOR_                       5082
+
